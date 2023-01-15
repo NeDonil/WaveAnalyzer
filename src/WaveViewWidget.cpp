@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QWheelEvent>
+#include <algorithm>
 #include "WaveViewWidget.h"
 #include "WaveProcessor.h"
 
@@ -30,9 +31,11 @@ void WaveViewWidget::initInfo(){
 void WaveViewWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
 
-
-    drawPeriod(painter);
     drawBackground(painter);
+
+    if(m_Wave.getPeriod() > 1){
+        drawPeriod(painter);
+    }
 
     painter.setPen(QPen(Qt::red, m_Info.lineWidth, Qt::SolidLine, Qt::RoundCap));
     int ampCount = m_Wave.getAmpCount();
@@ -53,6 +56,7 @@ void WaveViewWidget::wheelEvent(QWheelEvent *event){
     QPoint numSteps = numDegrees / 15;
 
     m_Info.yScaleFactor += numDegrees.y() * 0.001;
+    m_Info.yScaleFactor = std::max(m_Info.yScaleFactor, 0.1);
     recalculateInfo();
     repaint();
 }
@@ -99,7 +103,9 @@ void WaveViewWidget::processWave() {
         return;
     }
 
+    m_Wave.setPeriod(period.size());
     m_Info.periodWidth = (period.size() - 1) * m_Info.betweenAmplitudes;
+    recalculateInfo();
     repaint();
 }
 
@@ -111,6 +117,7 @@ void WaveViewWidget::resetPeriod() {
 void WaveViewWidget::readFromFile(QString &filename){
     m_Wave.fromFile(filename);
     recalculateInfo();
+    m_Wave.setPeriod(1);
 }
 
 void WaveViewWidget::recalculateInfo(){

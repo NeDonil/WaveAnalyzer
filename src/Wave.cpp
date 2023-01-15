@@ -3,6 +3,10 @@
 #include <QTextStream>
 #include <QDebug>
 
+void Wave::setPeriod(int period){
+    m_Period = period;
+}
+
 void Wave::fromFile(const QString& filename){
 	QFile file(filename);
     if(!file.open(QIODevice::ReadOnly)){

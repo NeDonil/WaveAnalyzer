@@ -16,7 +16,7 @@ public:
     Wave(const std::vector<int>& values) { m_Values = values;}
     Wave(std::vector<int>& values) { m_Values = values;}
 
-	void setPeriod(int period);
+    void setPeriod(int period);
     int getPeriod() {return m_Period;};
 
     int getAmpCount() { return m_Values.size();}

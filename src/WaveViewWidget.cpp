@@ -4,11 +4,32 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QWheelEvent>
 #include "WaveViewWidget.h"
 #include "WaveProcessor.h"
 
+WaveViewWidget::WaveViewWidget(){
+    initInfo();
+}
+
+WaveViewWidget::WaveViewWidget(Wave& wave) :
+    m_Wave(wave)
+{
+    initInfo();
+    recalculateInfo();
+}
+
+void WaveViewWidget::initInfo(){
+    m_Info.titleHeight = 31;
+    m_Info.lineWidth = 2;
+    m_Info.border = 50;
+    m_Info.bgColor = QColor(0, 0, 0, 100);
+    m_Info.yScaleFactor = 0.45;
+}
+
 void WaveViewWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
+
 
     drawPeriod(painter);
     drawBackground(painter);
@@ -25,6 +46,15 @@ void WaveViewWidget::paintEvent(QPaintEvent *event) {
 
 void WaveViewWidget::resizeEvent(QResizeEvent *event){
     recalculateInfo();
+}
+
+void WaveViewWidget::wheelEvent(QWheelEvent *event){
+    QPoint numDegrees = event->angleDelta() / 8;
+    QPoint numSteps = numDegrees / 15;
+
+    m_Info.yScaleFactor += numDegrees.y() * 0.001;
+    recalculateInfo();
+    repaint();
 }
 
 void WaveViewWidget::drawPeriod(QPainter &painter) {
@@ -84,11 +114,6 @@ void WaveViewWidget::readFromFile(QString &filename){
 }
 
 void WaveViewWidget::recalculateInfo(){
-    m_Info.titleHeight = 31;
-    m_Info.lineWidth = 2;
-    m_Info.border = 50;
-    m_Info.bgColor = QColor(0, 0, 0, 100);
-
     m_Info.startX = frameGeometry().x();
     m_Info.startY = frameGeometry().y();
     m_Info.widgetWidth = frameGeometry().width();
@@ -105,5 +130,5 @@ void WaveViewWidget::recalculateInfo(){
     m_Info.count = ampCount / period;
     m_Info.betweenAmplitudes = 5 * 2;
     m_Info.periodWidth = (m_Info.betweenAmplitudes) * (period);
-    m_Info.yScale = (m_Info.widgetHeight * 0.45) / * std::max_element(wBegin, wEnd);
+    m_Info.yScale = (m_Info.widgetHeight * m_Info.yScaleFactor) / * std::max_element(wBegin, wEnd);
 }

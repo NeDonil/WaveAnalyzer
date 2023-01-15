@@ -30,13 +30,15 @@ struct WaveViewWidgetInfo{
     int cellSize;
     int betweenAmplitudes;
 
+    double yScaleFactor;
+
     QColor bgColor;
 };
 
 class WaveViewWidget : public QWidget{
 public:
     WaveViewWidget();
-    WaveViewWidget(Wave& wave){ m_Wave = wave; recalculateInfo();}
+    WaveViewWidget(Wave& wave);
 
     void setWave(const Wave& wave) { m_Wave = wave; recalculateInfo();}
     void readFromFile(QString& filename);
@@ -45,10 +47,12 @@ public:
 protected:
     void paintEvent(QPaintEvent* event);
     void resizeEvent(QResizeEvent* event);
+    void wheelEvent(QWheelEvent* event);
 private:
     void drawBackground(QPainter& painter);
     void drawPeriod(QPainter& painter);
 private:
+    void initInfo();
     void recalculateInfo();
 private:
     Wave m_Wave;

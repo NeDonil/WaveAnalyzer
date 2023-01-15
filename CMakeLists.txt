@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
-project(SVPCourse)
+project(WaveAnalyzer)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-
 
 find_package(Qt6 COMPONENTS
         Core
@@ -13,8 +12,18 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(SVPCourse main.cpp WaveViewWidget.cpp WaveViewWidget.h MainWindow.cpp MainWindow.h WaveProcessor.cpp WaveProcessor.h Wave.h Wave.cpp)
-target_link_libraries(SVPCourse
+add_executable(WaveAnalyzer
+    src/main.cpp
+    src/WaveViewWidget.cpp
+    src/WaveViewWidget.h
+    src/MainWindow.cpp
+    src/MainWindow.h
+    src/WaveProcessor.cpp
+    src/WaveProcessor.h
+    src/Wave.h
+    src/Wave.cpp)
+
+target_link_libraries(WaveAnalyzer
         Qt::Core
         Qt::Gui
         Qt::Widgets

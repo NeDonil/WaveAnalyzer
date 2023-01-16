@@ -10,6 +10,7 @@
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
 #include <QPalette>
+#include <QScrollArea>
 #include "MainWindow.h"
 #include "WaveProcessor.h"
 
@@ -28,7 +29,6 @@ MainWindow::MainWindow() {
     setPalette(pal);
 
     setCentralWidget(m_WaveViewWidget);
-    setContentsMargins(0, 0, 0, 0);
     createActions();
     createMenus();
 }

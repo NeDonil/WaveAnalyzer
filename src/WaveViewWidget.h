@@ -19,7 +19,8 @@ struct WaveViewWidgetInfo{
 
     int widgetHeight;
     int titleHeight;
-    
+
+    int xOffset;
     int middleYLine;
     int middleYOffset;
 
@@ -33,6 +34,8 @@ struct WaveViewWidgetInfo{
     double yScaleFactor;
 
     QColor bgColor;
+
+    QPoint lastMousePos;
 };
 
 class WaveViewWidget : public QWidget{
@@ -48,6 +51,9 @@ protected:
     void paintEvent(QPaintEvent* event);
     void resizeEvent(QResizeEvent* event);
     void wheelEvent(QWheelEvent* event);
+
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
 private:
     void drawBackground(QPainter& painter);
     void drawPeriod(QPainter& painter);

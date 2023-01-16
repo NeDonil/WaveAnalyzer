@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QWheelEvent>
+#include <QMouseEvent>
 #include <algorithm>
 #include "WaveViewWidget.h"
 #include "WaveProcessor.h"
@@ -26,6 +27,7 @@ void WaveViewWidget::initInfo(){
     m_Info.border = 50;
     m_Info.bgColor = QColor(0, 0, 0, 100);
     m_Info.yScaleFactor = 0.45;
+    m_Info.xOffset = 0;
 }
 
 void WaveViewWidget::paintEvent(QPaintEvent *event) {
@@ -59,6 +61,24 @@ void WaveViewWidget::wheelEvent(QWheelEvent *event){
     m_Info.yScaleFactor = std::max(m_Info.yScaleFactor, 0.1);
     recalculateInfo();
     repaint();
+}
+
+void WaveViewWidget::mousePressEvent(QMouseEvent * event){
+    m_Info.lastMousePos = event->pos();
+}
+
+void WaveViewWidget::mouseMoveEvent(QMouseEvent * event){
+    auto offset = m_Info.lastMousePos - event->pos();
+    m_Info.xOffset -= offset.x();
+    m_Info.xOffset = std::min(m_Info.xOffset, 0);
+
+    m_Info.lastMousePos = event->pos();
+
+    if(offset.x() != 0){
+        recalculateInfo();
+        repaint();
+    }
+
 }
 
 void WaveViewWidget::drawPeriod(QPainter &painter) {
@@ -121,7 +141,7 @@ void WaveViewWidget::readFromFile(QString &filename){
 }
 
 void WaveViewWidget::recalculateInfo(){
-    m_Info.startX = frameGeometry().x();
+    m_Info.startX = frameGeometry().x() + m_Info.xOffset;
     m_Info.startY = frameGeometry().y();
     m_Info.widgetWidth = frameGeometry().width();
     m_Info.widgetHeight = frameGeometry().height();

@@ -14,9 +14,9 @@ WaveViewWidget::WaveViewWidget(){
     initInfo();
 }
 
-WaveViewWidget::WaveViewWidget(Wave& wave) :
-    m_Wave(wave)
+WaveViewWidget::WaveViewWidget(Wave& wave)
 {
+    m_Wave = wave;
     initInfo();
     recalculateInfo();
 }
@@ -28,12 +28,15 @@ void WaveViewWidget::initInfo(){
     m_Info.bgColor = QColor(0, 0, 0, 100);
     m_Info.yScaleFactor = 0.45;
     m_Info.xOffset = 0;
+    m_Info.betweenAmplitudes = 5 * 2;
+    m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes;
 }
 
 void WaveViewWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
 
     drawBackground(painter);
+
 
     if(m_Wave.getPeriod() > 1){
         drawPeriod(painter);
@@ -107,7 +110,15 @@ void WaveViewWidget::drawBackground(QPainter& painter) {
                      m_Info.widgetWidth, m_Info.middleYLine + m_Info.middleYOffset);
 
     painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap));
-    for(int i = 0; i <= m_Info.widgetWidth / m_Info.cellSize; i++){
+
+    int widthCellCount = m_Info.totalWaveWidth / m_Info.cellSize;
+    int defaultCellCount = m_Info.widgetWidth / m_Info.cellSize;
+
+    qDebug() << m_Info.totalWaveWidth;
+
+    widthCellCount = std::max(widthCellCount, defaultCellCount);
+
+    for(int i = 0; i <= widthCellCount; i++){
         painter.drawLine(m_Info.startX + i * m_Info.cellSize, m_Info.startY - m_Info.titleHeight,
                          m_Info.startX + i * m_Info.cellSize, m_Info.widgetHeight);
     }
@@ -141,9 +152,9 @@ void WaveViewWidget::resetPeriod() {
 
 void WaveViewWidget::readFromFile(QString &filename){
     m_Wave.fromFile(filename);
+    m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes;
     m_Wave.setPeriod(1);
     recalculateInfo();
-
 }
 
 void WaveViewWidget::recalculateInfo(){

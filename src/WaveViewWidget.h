@@ -30,6 +30,7 @@ struct WaveViewWidgetInfo{
     int border;
     int cellSize;
     int betweenAmplitudes;
+    int totalWaveWidth;
 
     double yScaleFactor;
 

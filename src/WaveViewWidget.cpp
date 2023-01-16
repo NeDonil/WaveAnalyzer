@@ -131,11 +131,12 @@ void WaveViewWidget::recalculateInfo(){
     auto wBegin = m_Wave.cbegin();
     auto wEnd = m_Wave.cend();
 
+    double scale = (m_Info.yScaleFactor + 0.55);
     m_Info.middleYLine = m_Info.startY + (m_Info.widgetHeight - m_Info.border) / 2 - m_Info.titleHeight;
-    m_Info.cellSize = (m_Info.middleYLine - m_Info.startY) / 10;
+    m_Info.cellSize = (m_Info.middleYLine - m_Info.startY) * scale / 10;
     m_Info.middleYOffset = (ceil((double)m_Info.middleYLine / m_Info.cellSize) * m_Info.cellSize) - m_Info.middleYLine;
     m_Info.count = ampCount / period;
-    m_Info.betweenAmplitudes = 5 * 2;
-    m_Info.periodWidth = (m_Info.betweenAmplitudes) * (period);
+    m_Info.betweenAmplitudes = 5 * 2 * scale;
+    m_Info.periodWidth = (m_Info.betweenAmplitudes) * (period) * scale;
     m_Info.yScale = (m_Info.widgetHeight * m_Info.yScaleFactor) / * std::max_element(wBegin, wEnd);
 }

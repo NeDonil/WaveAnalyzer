@@ -57,7 +57,7 @@ void WaveViewWidget::wheelEvent(QWheelEvent *event){
     QPoint numDegrees = event->angleDelta() / 8;
     QPoint numSteps = numDegrees / 15;
 
-    m_Info.yScaleFactor += numDegrees.y() * 0.001;
+    m_Info.yScaleFactor += numSteps.y() * 0.009;
     m_Info.yScaleFactor = std::max(m_Info.yScaleFactor, 0.1);
     recalculateInfo();
     repaint();
@@ -83,11 +83,15 @@ void WaveViewWidget::mouseMoveEvent(QMouseEvent * event){
 
 void WaveViewWidget::drawPeriod(QPainter &painter) {
 
-    painter.setPen(QPen(Qt::green, 2, Qt::SolidLine, Qt::RoundCap));
-    painter.fillRect(m_Info.startX, m_Info.startY - m_Info.titleHeight,
-                     m_Info.periodWidth, m_Info.startY + m_Info.widgetHeight, m_Info.bgColor);
-
     int period = m_Wave.getPeriod();
+
+    m_Info.periodWidth = (m_Info.betweenAmplitudes) * (period);
+    painter.fillRect(m_Info.startX - m_Info.xOffset, m_Info.startY - m_Info.titleHeight,
+                     m_Info.periodWidth + m_Info.xOffset, m_Info.startY + m_Info.widgetHeight,
+                     m_Info.bgColor);
+
+    painter.setPen(QPen(Qt::green, 2, Qt::SolidLine, Qt::RoundCap));
+
     for(int i = 1; i <= m_Info.count; i++){
         int startXValue = m_Info.startX + (m_Info.betweenAmplitudes) * i * (period);
 
@@ -99,7 +103,7 @@ void WaveViewWidget::drawPeriod(QPainter &painter) {
 void WaveViewWidget::drawBackground(QPainter& painter) {
 
     painter.setPen(QPen(Qt::gray, m_Info.lineWidth, Qt::DashLine, Qt::RoundCap));
-    painter.drawLine(frameGeometry().x(), m_Info.middleYLine + m_Info.middleYOffset,
+    painter.drawLine(m_Info.startX - m_Info.xOffset, m_Info.middleYLine + m_Info.middleYOffset,
                      m_Info.widgetWidth, m_Info.middleYLine + m_Info.middleYOffset);
 
     painter.setPen(QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap));
@@ -130,14 +134,16 @@ void WaveViewWidget::processWave() {
 }
 
 void WaveViewWidget::resetPeriod() {
-    m_Info.periodWidth = m_Wave.getAmpCount();
+    m_Wave.setPeriod(1);
+    recalculateInfo();
     repaint();
 }
 
 void WaveViewWidget::readFromFile(QString &filename){
     m_Wave.fromFile(filename);
-    recalculateInfo();
     m_Wave.setPeriod(1);
+    recalculateInfo();
+
 }
 
 void WaveViewWidget::recalculateInfo(){
@@ -152,6 +158,7 @@ void WaveViewWidget::recalculateInfo(){
     auto wEnd = m_Wave.cend();
 
     double scale = (m_Info.yScaleFactor + 0.55);
+
     m_Info.middleYLine = m_Info.startY + (m_Info.widgetHeight - m_Info.border) / 2 - m_Info.titleHeight;
     m_Info.cellSize = (m_Info.middleYLine - m_Info.startY) * scale / 10;
     m_Info.middleYOffset = (ceil((double)m_Info.middleYLine / m_Info.cellSize) * m_Info.cellSize) - m_Info.middleYLine;

@@ -25,7 +25,7 @@ public:
     std::vector<int>::const_iterator cbegin(){return m_Values.cbegin();}
     std::vector<int>::const_iterator cend(){return m_Values.cend();}
 
-    void fromFile(const QString& filename);
+    bool fromFile(const QString& filename);
 private:
     int m_Period = 1;
 	std::vector<int> m_Values;

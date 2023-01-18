@@ -60,7 +60,6 @@ void MainWindow::createMenus() {
 void MainWindow::openFile(){
     //auto fileinfo = QFileIQFileDialog::getOpenFileName(this, tr("Select wave file"), "assets/", "Wave(*.wave)")nfo();
     auto filename = QFileDialog::getOpenFileName(this, tr("Select wave file"), "assets/", "Wave(*.wave)");
-    qDebug() << filename;
 
     m_WaveViewWidget->readFromFile(filename);
 }

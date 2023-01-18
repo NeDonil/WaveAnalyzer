@@ -3,11 +3,19 @@
 #include <QTextStream>
 #include <QDebug>
 
-void Wave::fromFile(const QString& filename){
+bool isDigit(QString& value){
+    for(auto i : value){
+        if(!i.isDigit())
+            return false;
+    }
+
+    return true;
+}
+
+bool Wave::fromFile(const QString& filename){
 	QFile file(filename);
     if(!file.open(QIODevice::ReadOnly)){
-        qDebug() << "Could not to open file:" + filename;
-        return;
+        return false;
     }
 
     QTextStream in(&file);
@@ -17,11 +25,18 @@ void Wave::fromFile(const QString& filename){
 
     std::vector<int> values;
     for(auto& i : tokens){
-        values.push_back(i.toInt());
+        if(isDigit(i)){
+            values.push_back(i.toInt());
+        }
+        else{
+            file.close();
+            return false;
+        }
     }
 
     m_Values = values;
     file.close();
+    return true;
 }
 
 

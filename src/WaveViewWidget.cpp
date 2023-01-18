@@ -114,8 +114,6 @@ void WaveViewWidget::drawBackground(QPainter& painter) {
     int widthCellCount = m_Info.totalWaveWidth / m_Info.cellSize;
     int defaultCellCount = m_Info.widgetWidth / m_Info.cellSize;
 
-    qDebug() << m_Info.totalWaveWidth;
-
     widthCellCount = std::max(widthCellCount, defaultCellCount);
 
     for(int i = 0; i <= widthCellCount; i++){
@@ -151,7 +149,11 @@ void WaveViewWidget::resetPeriod() {
 }
 
 void WaveViewWidget::readFromFile(QString &filename){
-    m_Wave.fromFile(filename);
+    if(!m_Wave.fromFile(filename)){
+        QMessageBox::critical(this, "File Open Error", "Could not to read/parse file: " + filename);
+        return;
+    }
+
     m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes;
     m_Wave.setPeriod(1);
     recalculateInfo();

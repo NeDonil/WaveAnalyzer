@@ -23,7 +23,6 @@ private slots:
 private:
     void createActions();
     void createMenus();
-    void parseFile(QString&);
 private:
     WaveViewWidget* m_WaveViewWidget;
     QAction* m_OpenAct;

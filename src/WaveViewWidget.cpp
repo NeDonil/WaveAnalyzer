@@ -62,10 +62,12 @@ void WaveViewWidget::wheelEvent(QWheelEvent *event){
 
     m_Info.yScaleFactor += numSteps.y() * 0.009;
     m_Info.yScaleFactor = std::max(m_Info.yScaleFactor, 0.1);
-    m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes - m_Info.betweenAmplitudes;;
+    m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes;
 
-    int allowOffset = m_Info.widgetWidth - m_Info.totalWaveWidth;
-    m_Info.xOffset = std::max(m_Info.xOffset, allowOffset);
+    if(m_Info.totalWaveWidth > m_Info.widgetWidth){
+        int allowOffset = m_Info.widgetWidth - m_Info.totalWaveWidth - m_Info.betweenAmplitudes;
+        m_Info.xOffset = std::max(m_Info.xOffset, allowOffset);
+    }
 
     recalculateInfo();
     repaint();
@@ -86,8 +88,6 @@ void WaveViewWidget::mouseMoveEvent(QMouseEvent * event){
     m_Info.xOffset -= offset.x();
     m_Info.xOffset = std::min(m_Info.xOffset, 0);
     m_Info.xOffset = std::max(m_Info.xOffset, allowOffset);
-
-    qDebug() << m_Info.xOffset << " " << allowOffset;
 
     m_Info.lastMousePos = event->pos();
 
@@ -169,7 +169,6 @@ void WaveViewWidget::readFromFile(QString &filename){
     }
 
     m_Info.totalWaveWidth = m_Wave.getAmpCount() * m_Info.betweenAmplitudes;
-    qDebug() << m_Info.totalWaveWidth;
     m_Wave.setPeriod(1);
     recalculateInfo();
 }

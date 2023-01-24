@@ -23,6 +23,8 @@ private slots:
 private:
     void createActions();
     void createMenus();
+public:
+    QSize m_LastSize;
 private:
     WaveViewWidget* m_WaveViewWidget;
     QAction* m_OpenAct;

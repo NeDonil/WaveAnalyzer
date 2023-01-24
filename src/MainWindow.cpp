@@ -16,6 +16,7 @@
 
 MainWindow::MainWindow() {
     resize(800, 600);
+    m_LastSize = QSize(800, 600);
     setWindowTitle(tr("Wave analyzer"));
     setMinimumSize(160, 160);
 

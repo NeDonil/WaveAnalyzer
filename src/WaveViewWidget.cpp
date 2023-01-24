@@ -58,7 +58,6 @@ void WaveViewWidget::paintEvent(QPaintEvent *event) {
 void WaveViewWidget::resizeEvent(QResizeEvent *event){
     auto resizeOffset =  event->size() - ((MainWindow*)parent())->m_LastSize;
     ((MainWindow*)parent())->m_LastSize = event->size();
-    qDebug() << resizeOffset;
 
     m_Info.widgetWidth += resizeOffset.width();
     m_Info.widgetHeight += resizeOffset.height();
@@ -81,7 +80,6 @@ void WaveViewWidget::wheelEvent(QWheelEvent *event){
 
     recalculateInfo();
     repaint();
-    qDebug() << m_Info.totalWaveWidth;
 }
 
 void WaveViewWidget::mousePressEvent(QMouseEvent * event){
